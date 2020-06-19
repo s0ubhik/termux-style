@@ -3,7 +3,7 @@ styling in your own way
 
 this tool lets you to install more than 250+ color shemes and 26 best fonts in your termux.
 
-##Installation
+## Installation
 These steps will install termux-style in your termux.
 ```
 # clone the repo
