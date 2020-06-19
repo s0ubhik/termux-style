@@ -1,0 +1,401 @@
+### Begin painter.sh
+ncol="\033[0m"
+bold="\033[1m"
+dim="\033[2m"
+uline="\033[4m"
+reverse="\033[7m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+blue="\033[34m"
+purple="\033[35m"
+cyan="\033[36m"
+white="\033[37m"
+
+label(){ #labelName
+  printf $reverse$bold$cyan"$1$ncol\n"
+}
+
+Head(){
+  printf $bold$uline"$1$ncol\n"
+}
+
+addLog(){ # symbol color text
+  printf $dim$2$1$ncol$bold$2"$3$ncol"
+}
+
+addPad(){ # text
+  printf "  $1" | sed -z 's/\n/\n  /g'
+  printf "\n"
+}
+
+desc(){
+  addPad "$1"
+}
+
+scs(){ # message
+ addLog "["$ncol$bold$green"+$ncol$green$dim]" $green " $1"
+}
+
+
+blt(){ # message
+  addLog "["$ncol$bold$purple"*$ncol$purple$dim]" $purple " $ncol$white$1\n"
+}
+
+err(){ # message
+  addLog "["$ncol$red$bold"-$ncol$dim$red]" $red " $1\n"
+}
+
+wrn(){ # message
+  addLog "["$ncol$yellow$bold"!$ncol$dim$yellow]" $yellow " $1\n"
+}
+
+ask(){ #text #show #force #default
+  if [ "$1" != "" ]
+  then
+  addLog "["$ncol$bold$blue"?$ncol$dim$blue]" $blue " $1"
+
+  fi
+  read -p "" inp
+
+  while [ "$inp" = "" ]
+  do
+    if [ "$4" != "" ]
+    then
+      inp=$4
+      break
+    fi
+    if [ "$3" = "True" ]
+    then
+      addLog "["$ncol$bold$blue"?$ncol$dim$blue]" $blue " $1"
+      read -p "" inp
+    fi
+  done
+  if [ "$2" = "True" ]
+  then
+    printf "  $bold$cyan""==> $ncol$inp\n"
+  fi
+}
+inp(){
+  printf "$bold$blue$1$ncol"
+  ask ""
+}
+### end painter.sh
+
+show_banner(){
+  printf "\n\n\t"
+  label "T E R M U X - S T Y L E"  
+  printf "\t"
+  printf "styling in your own way\n\n"
+  printf "\t    $bold$blue""Author: "$ncol"blackc8\n\n"
+}
+style_init(){
+installDIR="/data/data/com.termux/files/usr/share/termux-style"
+if [ -d "$installDIR" ]; then
+   installed=true
+else
+   installed=false
+fi
+if [ "$(pwd)" = "/data/data/com.termux/files/usr/bin" ];then
+  colDIR=$PREFIX"/share/termux-style/colors"
+  fntDIR=$PREFIX"/share/termux-style/fonts"
+else
+  colDIR="./colors"
+  fntDIR="./fonts"
+fi
+
+if [ ! -d "$colDIR" ]; then
+  maxCol="!"
+else
+  count_colors
+fi
+
+if [ ! -d "$fntDIR" ]; then
+  maxFnt="!"
+else
+  count_fonts
+fi
+
+}
+count_colors(){
+  maxCol=$(ls $colDIR | wc -l)
+}
+count_fonts(){
+  maxFnt=$(ls $fntDIR | wc -l)
+}
+
+load_colors(){
+  blt "Loading colors..."
+  cdback=$(pwd)
+  cd $colDIR
+  count=1
+  printf ''>.cache
+  for colorF in *.properties; do
+    colorNm=$(echo $colorF |  cut -f 1 -d '.')
+    printf "  $dim$green""[$ncol$bold$green%03d$ncol$dim$green""] $ncol$colorNm\n" $count>>.cache
+    count=$(($count+1))
+  done
+  cd $cdback
+}
+
+load_fonts(){
+  blt "Loading fonts..."
+  cdback=$(pwd)
+  cd $fntDIR
+  count=1
+  printf ''>.cache
+  for fontF in *.ttf; do
+    fontNm=$(echo $fontF |  cut -f 1 -d '.')
+    printf "  $dim$blue""[$ncol$bold$blue%03d$ncol$dim$blue""] $ncol$fontNm\n" $count>>.cache
+    count=$(($count+1))
+  done
+  cd $cdback
+}
+
+change_scheme(){
+  schemeNm=$(echo $1 | cut -f 1 -d '.')
+  scs $white"Appying Color Scheme $cyan $schemeNm$ncol..."
+  cp $colDIR"/$1" ~/.termux/colors.properties
+  if [ "$?" = 0 ]; then
+    printf $bold$green"done\n"$ncol
+  else
+    printf $bold$red"error\n"$ncol
+  fi
+  scs $white"Reloading Settings..."
+  am broadcast --user 0 -a com.termux.app.reload_style com.termux>/dev/null
+  if [ "$?" = 0 ]; then
+    printf $bold$green"done\n"$ncol
+  else
+    printf $bold$red"error\n"$ncol
+  fi
+
+}
+change_font(){
+  fontName=$(echo $1 | cut -f 1 -d '.')
+  wrn "This may crash your sessions, may need to re-open Termux"
+  scs $white"Appying Font$cyan $fontName$ncol..."
+  cp $fntDIR"/$1" ~/.termux/font.ttf
+  if [ "$?" = 0 ]; then
+    printf $bold$green"done\n"$ncol
+  else
+    printf $bold$red"error\n"$ncol
+  fi
+  scs $white"Reloading Settings..."
+  am broadcast --user 0 -a com.termux.app.reload_style com.termux>/dev/null
+  if [ "$?" = 0 ]; then
+    printf $bold$green"done\n"$ncol
+  else
+    printf $bold$red"error\n"$ncol
+  fi
+
+}
+
+show_colors(){
+  clear
+  show_banner
+  if [ ! -f "$colDIR""/.cache" ]; then
+    load_colors
+  fi
+  cat $colDIR"/.cache"
+  printf "  "
+  addLog "["$ncol$bold$yellow"b$ncol$dim$yellow]" $yellow " back\n"
+  printf "  "
+  addLog "["$ncol$g$red"e$ncol$dim$red]" $red " exit\n"
+  echo ""
+}
+
+show_fonts(){
+  clear
+  show_banner
+  if [ ! -f "$fntDIR""/.cache" ]; then
+    load_fonts
+  fi
+  cat $fntDIR"/.cache"
+  printf "  "
+  addLog "["$ncol$bold$yellow"b$ncol$dim$yellow]" $yellow " back\n"
+  printf "  "
+  addLog "["$ncol$g$red"e$ncol$dim$red]" $red " exit\n"
+  echo ""
+}
+
+select_color(){
+  count_colors
+  inp=0
+  while [ "$inp" -le  0 -o "$inp" -gt "$maxCol" ]; do
+  ask "Choose Color Scheme: " False True
+  if [ "$inp" = "b" ]; then
+    main
+    select_main
+    exit
+
+  elif [ "$inp" = "e" ]; then
+    printf "Exting...\n"
+    exit
+  else
+    inp=$(echo $inp | sed "s/[^0-9]/0/g")
+  fi
+  if [ "$inp" -le  0 -o "$inp" -gt "$maxCol" ]; then
+    err "Invalid Color scheme id.Try again"
+  fi
+
+  done
+
+  colShm=$(ls $colDIR | sed -n "$inp"p)
+  change_scheme "$colShm"
+  select_color
+}
+
+select_font(){
+  count_fonts
+  inp=0
+  while [ "$inp" -le  0 -o "$inp" -gt "$maxFnt" ]; do
+
+  ask "Choose Font: " False True
+  if [ "$inp" = "b" ]; then
+    main
+    select_main
+    exit
+  elif [ "$inp" = "e" ]; then
+    printf "Exting...\n"
+    exit
+  else
+    inp=$(echo $inp | sed "s/[^0-9]/0/g")
+  fi
+  if [ "$inp" -le  0 -o "$inp" -gt "$maxFnt" ]; then
+    err "Invalid Font id.Try again"
+  fi
+
+  done
+
+  fntF=$(ls $fntDIR | sed -n "$inp"p)
+  change_font "$fntF"
+  select_font
+}
+
+install_style(){
+   if [ $installed = true ]; then
+       wrn "termux-style is already installed in your system"
+       select_main
+   fi
+   if [ ! -d "$colDIR" ]; then
+     colDIR=""
+   fi
+   if [ ! -d "$fntDIR" ]; then
+     fntDIR=""
+   fi
+   scs $white"Installing termux-style..."
+   mkdir $installDIR
+
+   cp -rft $installDIR $colDIR $fntDIR
+   cp -f $0 $PREFIX"/bin/style"
+
+   if [ "$?" = 0 ]; then
+     printf $green"done\n"
+     printf $bold$white"Use$bold$cyan style$ncol$white$bold to run termux-style$ncol\n"
+    else
+     printf $red"error\n"
+     scs $bold$white"Cleaning..."
+     rm -rf $installDIR $PREFIX"/bin/style"
+     printf $green"done\n"
+   fi
+}
+
+remove_style(){
+if [ "$installed" = false ]; then
+       wrn "termux-style is not installed in your system!"
+       select_main
+   fi
+  scs $white"Removing termux-style..."                     
+  rm -rf $installDIR $PREFIX"/bin/style"
+  if [ "$?" = 0 ]; then
+     printf $green"done\n$ncol"
+
+   else
+     printf $red"error\n"
+   fi                                                        
+   if [ "$installed" = true ]; then
+     printf $bold$yellow"Sorry, to see you go :($ncol\n"
+     exit
+   fi
+}
+
+								
+							     
+main(){
+clear
+show_banner
+style_init
+printf "  "
+addLog "["$ncol$green$bold"c$ncol$dim$green]" $green " Colors$ncol ($maxCol)\n"
+printf "  "
+addLog "["$ncol$blue$bold"f$ncol$dim$blue]" $blue " Fonts$ncol ($maxFnt)\n"
+printf "  "
+addLog "["$ncol$g$purple"i$ncol$dim$purple]" $purple " Install\n"
+printf "  "
+addLog "["$ncol$g$yellow"r$ncol$dim$yellow]" $yellow " Remove\n"
+printf "  "
+addLog "["$ncol$g$red"e$ncol$dim$red]" $red " Exit\n"
+echo ""
+}
+
+select_main(){
+style_init
+ask "Select Option: " False True
+if [ "$inp" = "c" ]; then
+  if [ "$maxCol" = "!" ]; then
+    err "It seems Color Directory does not exist."
+    select_main
+  else
+    show_colors
+    select_color
+  fi
+
+fi
+
+if [ "$inp" = "f" ]; then
+  if [ "$maxFnt" = "!" ];then
+    err "It seems Font Directory does not exists."
+    select_main
+
+  else
+    show_fonts
+    select_font
+  fi
+fi
+if [ "$inp" = "i" ]; then
+   install_style
+   select_colors
+fi
+if [ "$inp" = "r" ];then
+   remove-style
+   select_main
+fi
+
+
+if [ "$inp" = "e" ]; then
+  printf "Exting...\n"
+  exit
+fi
+
+
+err "None of the options.Exting..."
+exit
+}
+
+if [ "$1" = "--help" ]; then
+  printf "Usgae: style --install --remove\n"
+  printf "\t --install Install termux-style\n"
+  printf "\t --remove  Remove termux-style\n"
+  exit
+elif [ "$1" = "" ]; then
+  main
+  select_main
+elif [ "$1" = "--install" ]; then
+  style_init
+  install_style
+elif [ "$1" = "--remove" ]; then
+  style_init
+  remove_style
+else
+  printf "Invalid usage.Try --help\n"
+fi
