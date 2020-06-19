@@ -364,10 +364,10 @@ if [ "$inp" = "f" ]; then
 fi
 if [ "$inp" = "i" ]; then
    install_style
-   select_colors
+   select_color
 fi
 if [ "$inp" = "r" ];then
-   remove-style
+   remove_style
    select_main
 fi
 
