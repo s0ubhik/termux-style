@@ -96,7 +96,8 @@ if [ -d "$installDIR" ]; then
 else
    installed=false
 fi
-if [ "$(pwd)" = "/data/data/com.termux/files/usr/bin" ];then
+
+if [ -d $PREFIX"/share/termux-style/" ]; then
   colDIR=$PREFIX"/share/termux-style/colors"
   fntDIR=$PREFIX"/share/termux-style/fonts"
 else
