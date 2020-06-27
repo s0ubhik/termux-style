@@ -1,3 +1,4 @@
+#!/bin/bash
 ### Begin painter.sh
 ncol="\033[0m"
 bold="\033[1m"
@@ -276,8 +277,9 @@ select_font(){
 install_style(){
    if [ $installed = true ]; then
        wrn "termux-style is already installed in your system"
-       select_main
+       return
    fi
+
    if [ ! -d "$colDIR" ]; then
      colDIR=""
    fi
@@ -304,24 +306,22 @@ install_style(){
 remove_style(){
 if [ "$installed" = false ]; then
        wrn "termux-style is not installed in your system!"
-       select_main
-   fi
-  scs $white"Removing termux-style..."                     
+       return
+  fi
+  scs $white"Removing termux-style..."
   rm -rf $installDIR $PREFIX"/bin/style"
   if [ "$?" = 0 ]; then
      printf $green"done\n$ncol"
 
    else
      printf $red"error\n"
-   fi                                                        
+   fi
    if [ "$installed" = true ]; then
      printf $bold$yellow"Sorry, to see you go :($ncol\n"
      exit
    fi
 }
 
-								
-							     
 main(){
 clear
 show_banner
@@ -365,7 +365,7 @@ if [ "$inp" = "f" ]; then
 fi
 if [ "$inp" = "i" ]; then
    install_style
-   select_color
+   select_main
 fi
 if [ "$inp" = "r" ];then
    remove_style
@@ -394,9 +394,11 @@ elif [ "$1" = "" ]; then
 elif [ "$1" = "--install" ]; then
   style_init
   install_style
+  exit
 elif [ "$1" = "--remove" ]; then
   style_init
   remove_style
+  exit
 else
   printf "Invalid usage.Try --help\n"
 fi
