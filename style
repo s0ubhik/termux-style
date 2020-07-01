@@ -323,7 +323,10 @@ if [ "$installed" = false ]; then
 }
 
 main(){
-clear
+if [ ! -d $HOME"/.termux" ];then
+  mkdir $HOME"/.termux"
+fi
+
 show_banner
 style_init
 printf "  "
