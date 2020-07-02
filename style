@@ -85,7 +85,7 @@ inp(){
 
 show_banner(){
   printf "\n\n\t"
-  label "T E R M U X - S T Y L E"  
+  label "T E R M U X - S T Y L E"
   printf "\t"
   printf "styling in your own way\n\n"
   printf "\t    $bold$blue""Author: "$ncol"blackc8\n\n"
@@ -154,6 +154,17 @@ load_fonts(){
   cd $cdback
 }
 
+reload_settings(){
+  scs $white"Reloading Settings..."
+  am broadcast --user 0 -a com.termux.app.reload_style com.termux>/dev/null
+  if [ "$?" = 0 ]; then
+    printf $bold$green"done\n"$ncol
+  else
+    printf $bold$red"error\n"$ncol
+  fi
+}
+
+
 change_scheme(){
   schemeNm=$(echo $1 | cut -f 1 -d '.')
   scs $white"Appying Color Scheme $cyan $schemeNm$ncol..."
@@ -163,13 +174,7 @@ change_scheme(){
   else
     printf $bold$red"error\n"$ncol
   fi
-  scs $white"Reloading Settings..."
-  am broadcast --user 0 -a com.termux.app.reload_style com.termux>/dev/null
-  if [ "$?" = 0 ]; then
-    printf $bold$green"done\n"$ncol
-  else
-    printf $bold$red"error\n"$ncol
-  fi
+  reload_settings
 
 }
 change_font(){
@@ -182,14 +187,7 @@ change_font(){
   else
     printf $bold$red"error\n"$ncol
   fi
-  scs $white"Reloading Settings..."
-  am broadcast --user 0 -a com.termux.app.reload_style com.termux>/dev/null
-  if [ "$?" = 0 ]; then
-    printf $bold$green"done\n"$ncol
-  else
-    printf $bold$red"error\n"$ncol
-  fi
-
+  reload_settings
 }
 
 show_colors(){
@@ -199,6 +197,8 @@ show_colors(){
     load_colors
   fi
   cat $colDIR"/.cache"
+  printf "  "
+  addLog "["$ncol$bold$green"d$ncol$dim$green]" $green " default\n"
   printf "  "
   addLog "["$ncol$bold$yellow"b$ncol$dim$yellow]" $yellow " back\n"
   printf "  "
@@ -213,6 +213,8 @@ show_fonts(){
     load_fonts
   fi
   cat $fntDIR"/.cache"
+  printf "  "
+  addLog "["$ncol$bold$blue"d$ncol$dim$blue]" $blue " default\n"
   printf "  "
   addLog "["$ncol$bold$yellow"b$ncol$dim$yellow]" $yellow " back\n"
   printf "  "
@@ -229,7 +231,15 @@ select_color(){
     main
     select_main
     exit
+  elif [ "$inp" = "d" ]; then
+    scs $white"Setting color scheme to default..."
+    if [ -f $HOME"/.termux/colors.properties" ]; then
+      rm -r $HOME"/.termux/colors.properties"
+    fi
 
+    printf $bold$green"done\n"$ncol
+    reload_settings
+    select_color
   elif [ "$inp" = "e" ]; then
     printf "Exting...\n"
     exit
@@ -257,6 +267,15 @@ select_font(){
     main
     select_main
     exit
+  elif [ "$inp" = "d" ]; then
+    scs $white"Setting font to defaults..."
+    if [ -f $HOME"/.termux/font.ttf" ]; then
+      rm -r $HOME"/.termux/font.ttf"
+    fi
+    printf $bold$green"done\n"$ncol
+    reload_settings
+    select_font
+
   elif [ "$inp" = "e" ]; then
     printf "Exting...\n"
     exit
