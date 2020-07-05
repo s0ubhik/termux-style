@@ -156,7 +156,7 @@ load_fonts(){
 
 reload_settings(){
   scs $white"Reloading Settings..."
-  am broadcast --user 0 -a com.termux.app.reload_style com.termux>/dev/null
+  termux-reload-settings
   if [ "$?" = 0 ]; then
     printf $bold$green"done\n"$ncol
   else
