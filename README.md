@@ -29,9 +29,9 @@ style
 ![Screenshot1](screenshots/change-font.png)
 
 ## Contributer
-*  **Initial work** - [blackc8](https://github.com/termux-lock)
+*  **Initial work** - [s0ubhik](https://github.com/s0ubhik/termux-lock)
 
 ##  License & copyright
-© 2020 blackc8 <blackc8official@gmail.com>
+© 2020 blackc8 <soubhik1809@gmail.com>
 
 Licensed under the [MIT LICENSE](LICENSE)

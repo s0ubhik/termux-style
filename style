@@ -88,7 +88,7 @@ show_banner(){
   label "T E R M U X - S T Y L E"
   printf "\t"
   printf "styling in your own way\n\n"
-  printf "\t    $bold$blue""Author: "$ncol"blackc8\n\n"
+  printf "\t    $bold$blue""Author: "$ncol"s0ubhik\n\n"
 }
 style_init(){
 installDIR="/data/data/com.termux/files/usr/share/termux-style"
