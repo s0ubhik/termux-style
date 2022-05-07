@@ -7,7 +7,7 @@ this tool lets you to install more than 250+ color shemes and 26 best fonts in y
 These steps will install termux-style in your termux.
 ```
 # clone the repo
-git clone https://github.com/blackc8/termux-style.git
+git clone https://github.com/s0ubhik/termux-style.git
 # get into the directory
 cd termux-style
 # install termux-style
