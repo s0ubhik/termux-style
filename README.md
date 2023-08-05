@@ -21,17 +21,12 @@ style
 ![Screenshot1](screenshots/style-main.png)
 ### installing termux-style
 ![Screenshot1](screenshots/style-install.png)
-### removing termux-style
-![Screenshot1](screenshots/style-remove.png)
 ### changing color
 ![Screenshot1](screenshots/change-color.png)
 ### changing font
 ![Screenshot1](screenshots/change-font.png)
 
-## Contributer
-*  **Initial work** - [s0ubhik](https://github.com/s0ubhik/termux-lock)
-
 ##  License & copyright
-© 2020 blackc8 <soubhik1809@gmail.com>
+© 2020 s0ubhik <soubhik1809@gmail.com>
 
 Licensed under the [MIT LICENSE](LICENSE)
