@@ -1,4 +1,4 @@
-\# termux-style
+# termux-style
 styling in your own way
 
 this tool lets you to install more than 250+ color shemes and 26 best fonts in your termux.
