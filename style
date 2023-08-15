@@ -84,6 +84,7 @@ inp(){
 ### end painter.sh
 
 show_banner(){
+  clear
   printf "\n\n\t"
   label "T E R M U X - S T Y L E"
   printf "\t"
@@ -404,6 +405,15 @@ fi
 err "None of the options.Exting..."
 exit
 }
+
+if [ ! -d colors ] || [ ! -d fonts ]; then
+  if [ ! -f data.tar.gz ]; then
+    err "You deleted the data.tar.gz. Please reclone or redownload!"
+    exit
+  fi
+  tar -xf data.tar.gz
+fi
+
 
 if [ "$1" = "--help" ]; then
   printf "Usgae: style --install --remove\n"
